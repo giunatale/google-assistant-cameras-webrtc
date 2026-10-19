@@ -63,6 +63,7 @@ class NegotiationError(Exception):
         self, reason: str, *, status: int = 502, permanent: bool = False
     ) -> None:
         """Store reason, HTTP status and whether the failure is deterministic."""
+        reason = sdp_tools.sanitize_reason(reason)
         super().__init__(reason)
         self.reason = reason
         self.status = status
@@ -130,13 +131,15 @@ async def async_negotiate(
     loop = asyncio.get_running_loop()
     collector = _Collector(loop, loop.create_future(), loop.create_future())
     started = loop.time()
+    # Marked open first: a session closed while the provider is still taking
+    # the offer must still close the provider side.
+    session.provider_open = True
     try:
         await camera.async_handle_async_webrtc_offer(
             offer_sdp, session.session_id, collector
         )
     except HomeAssistantError as err:
         raise NegotiationError(f"provider refused the offer: {err}") from err
-    session.provider_open = True
 
     # 1. Wait for the answer (or an error).
     done, _pending = await asyncio.wait(
@@ -321,7 +324,7 @@ async def async_handle_webhook(
         )
         runtime.sessions.close(session, "failed")
         runtime.record_negotiation_failure(session.entity_id, err)
-        return _json(err.status, {"error": err.reason})
+        return _json(err.status, {"error": "negotiation failed"})
     except Exception:
         session.outcome = "failed: internal error"
         _LOGGER.exception(
@@ -329,6 +332,11 @@ async def async_handle_webhook(
         )
         runtime.sessions.close(session, "failed")
         return _json(500, {"error": "internal error"})
+
+    if session.token not in runtime.sessions.sessions:
+        # Closed (end, unload, eviction) while the provider was answering.
+        runtime.sessions.close_provider(session)
+        return _json(403, {"error": "forbidden"})
 
     session.answered = dt_util.utcnow()
     session.outcome = "answered"

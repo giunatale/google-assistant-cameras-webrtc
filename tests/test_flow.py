@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import timedelta
 import json
 from unittest.mock import patch
@@ -251,7 +252,7 @@ async def test_provider_error_counts_as_failure_and_trips(
             _path(info), json={"action": "offer", "sdp": OFFER_SDP}
         )
         assert resp.status == 502
-        assert (await resp.json())["error"].startswith("fake_error")
+        assert await resp.json() == {"error": "negotiation failed"}
     assert runtime.breaker.health(ENTITY_ID).state == "tripped"
     assert "tripped to HLS" in caplog.text
     # SYNC now advertises stock, EXECUTE for a webrtc-only target falls back and asks for a sync
@@ -315,7 +316,8 @@ async def test_audio_only_answer_is_unsupported(
     client = await hass_client_no_auth()
     info = await _execute(trait)
     resp = await client.post(_path(info), json={"action": "offer", "sdp": OFFER_SDP})
-    assert resp.status == 502 and "no video" in (await resp.json())["error"]
+    assert resp.status == 502
+    assert "no video" in runtime.sessions.history[-1]["outcome"]
     assert runtime.breaker.health(ENTITY_ID).state == "unsupported"
 
 
@@ -358,7 +360,10 @@ async def test_no_candidates_is_failure(
         resp = await client.post(
             _path(info), json={"action": "offer", "sdp": OFFER_SDP}
         )
-    assert resp.status == 502 and "candidates" in (await resp.json())["error"]
+    assert resp.status == 502
+    assert (
+        "candidates" in setup_integration.runtime_data.sessions.history[-1]["outcome"]
+    )
 
 
 async def test_second_offer_restarts_session(
@@ -453,3 +458,59 @@ async def test_execute_uses_stock_when_our_code_raises(
         info = await _execute(trait)
     assert info["cameraStreamAccessUrl"].endswith("master_playlist.m3u8")
     assert "using stock HLS" in caplog.text
+
+
+async def test_provider_error_details_never_leak(
+    hass: HomeAssistant,
+    setup_integration,
+    trait,
+    hass_client_no_auth,
+    provider: FakeProvider,
+    caplog,
+):
+    provider.mode = "error"
+    provider.error_message = (
+        "dial rtsp://admin:hunter2@198.51.100.77:554/live: connection refused"
+    )
+    runtime = setup_integration.runtime_data
+    client = await hass_client_no_auth()
+    info = await _execute(trait)
+    resp = await client.post(_path(info), json={"action": "offer", "sdp": OFFER_SDP})
+    assert resp.status == 502
+    assert await resp.json() == {"error": "negotiation failed"}
+    health = runtime.breaker.health(ENTITY_ID)
+    everything = "\n".join(
+        [
+            caplog.text,
+            str(runtime.sessions.history[-1]),
+            str(health.as_dict()),
+            await resp.text(),
+        ]
+    )
+    assert "hunter2" not in everything and "198.51.100.77" not in everything
+    assert "connection refused" in health.last_failure
+
+
+async def test_end_during_offer_closes_provider(
+    hass: HomeAssistant,
+    setup_integration,
+    trait,
+    hass_client_no_auth,
+    provider: FakeProvider,
+):
+    provider.delay = 0.5
+    runtime = setup_integration.runtime_data
+    client = await hass_client_no_auth()
+    info = await _execute(trait)
+    offer = hass.async_create_task(
+        client.post(_path(info), json={"action": "offer", "sdp": OFFER_SDP})
+    )
+    while not provider.offers:
+        await asyncio.sleep(0.01)
+    session = next(iter(runtime.sessions.sessions.values()))
+    runtime.sessions.close(session, "end")
+    resp = await offer
+    assert resp.status == 403
+    assert provider.closed == [session.session_id]
+    assert not runtime.sessions.sessions
+    assert session.media_check is None and not session.tasks

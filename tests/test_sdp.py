@@ -126,3 +126,15 @@ def test_redact_hides_addresses_and_secrets():
     assert "go2rtcpwd" not in text and "11:22:33:44" not in text
     assert "a=ice-ufrag:gortc" in text
     assert "a=rtpmap:102 H264/90000" in text
+
+
+def test_sanitize_reason():
+    out = sdp.sanitize_reason(
+        "dial rtsp://admin:pw@192.0.2.5:554/x failed to cam.local\n  fe80::1a2b:3c4d:5e6f:7a8b"
+    )
+    assert "pw" not in out and "192.0.2.5" not in out and "cam.local" not in out
+    assert "fe80" not in out and "\n" not in out
+    assert sdp.sanitize_reason(
+        "streams: codecs not matched: video:H265 => video:H264"
+    ) == ("streams: codecs not matched: video:H265 => video:H264")
+    assert len(sdp.sanitize_reason("x" * 500)) == 200

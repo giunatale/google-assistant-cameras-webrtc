@@ -19,6 +19,8 @@ _IPV4 = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
 _IPV6 = re.compile(r"\b(?:[0-9A-Fa-f]{0,4}:){2,7}[0-9A-Fa-f]{1,4}\b")
 _FQDN = re.compile(r"\b(?:[a-z0-9-]+\.)+(?:local|lan|home|internal)\b", re.IGNORECASE)
 
+_URL_USERINFO = re.compile(r"([a-z][a-z0-9+.-]*://)[^/\s@]+@", re.IGNORECASE)
+
 VIDEO_CODECS_ACCEPTED = ("H264", "VP8")
 
 
@@ -329,3 +331,17 @@ def redact(sdp: str) -> str:
         line = _FQDN.sub("<host>", line)
         out.append(line)
     return "\n".join(out)
+
+
+def sanitize_reason(text: str, limit: int = 200) -> str:
+    """Return provider error text safe for logs, repairs and storage.
+
+    Strips URL credentials and IP/host addresses, collapses whitespace and
+    caps the length.
+    """
+    text = _URL_USERINFO.sub(r"\1<redacted>@", text)
+    text = _IPV4.sub("<ipv4>", text)
+    text = _IPV6.sub("<ipv6>", text)
+    text = _FQDN.sub("<host>", text)
+    text = " ".join(text.split())
+    return text if len(text) <= limit else text[: limit - 1] + "…"

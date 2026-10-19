@@ -64,6 +64,7 @@ class FakeProvider(CameraWebRTCProvider):
     answer_sdp: str = ANSWER_SDP
     candidates: list[str] = field(default_factory=lambda: list(CANDIDATES))
     delay: float = 0.0
+    error_message: str = "boom"
     offers: list[tuple[str, str]] = field(default_factory=list)
     closed: list[str] = field(default_factory=list)
 
@@ -87,7 +88,7 @@ class FakeProvider(CameraWebRTCProvider):
         """Script the answer according to mode."""
         self.offers.append((session_id, offer_sdp))
         if self.mode == "error":
-            send_message(WebRTCError("fake_error", "boom"))
+            send_message(WebRTCError("fake_error", self.error_message))
             return
         if self.mode == "codec":
             send_message(
