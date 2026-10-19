@@ -1,0 +1,49 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Google Assistant WebRTC Cameras",
+        "description": "Installando questa integrazione Home Assistant offre WebRTC (con ripiego su HLS) quando Google Assistant mostra una telecamera su un display Nest. Non c'è nulla da configurare: rimuovendo l'integrazione si torna al comportamento standard."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "È consentita una sola istanza."
+    }
+  },
+  "issues": {
+    "trait_changed": {
+      "title": "Google Assistant WebRTC Cameras è inattiva",
+      "description": "Home Assistant {ha_version} ha modificato il trait telecamera di Google Assistant in un modo che questa integrazione non riconosce ({detail}). Google Assistant mantiene il comportamento HLS standard. Controlla se esiste un aggiornamento dell'integrazione."
+    },
+    "core_has_webrtc": {
+      "title": "Google Assistant WebRTC Cameras non è più necessaria",
+      "description": "Home Assistant {ha_version} offre già WebRTC a Google Assistant. L'integrazione si è disattivata e può essere rimossa."
+    },
+    "no_https": {
+      "title": "WebRTC per Google Assistant richiede un URL HTTPS",
+      "description": "L'URL che Home Assistant passa a Google per i flussi video ({scheme}://…) non è HTTPS, quindi il player di Google non può raggiungere l'endpoint di segnalazione WebRTC. Google Assistant mantiene l'HLS standard. Imposta un URL interno o esterno HTTPS (Impostazioni → Sistema → Rete) raggiungibile dai display: il problema si chiude da solo."
+    },
+    "sync_needed": {
+      "title": "Di' \"Hey Google, sincronizza i miei dispositivi\"",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Sincronizzazione dispositivi Google",
+            "description": "Home Assistant non è riuscito a chiedere a Google di risincronizzare i dispositivi ({reason}). Di' \"Hey Google, sincronizza i miei dispositivi\" a un dispositivo Google, poi invia questo modulo. Il problema si chiude anche da solo all'arrivo della sincronizzazione."
+          }
+        }
+      }
+    },
+    "camera_unsupported": {
+      "title": "{entity_id}: WebRTC disattivato per Google Assistant",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Riprova WebRTC per {entity_id}",
+            "description": "Il player di Google non è riuscito a negoziare un flusso WebRTC per {entity_id} ({reason}). I display Google ricevono il flusso HLS standard per questa telecamera. I display Google richiedono video H.264 o VP8 (480p–1080p); le telecamere HEVC/H.265 necessitano di un sub-stream H.264. Dopo aver modificato il flusso della telecamera, invia questo modulo per riprovare WebRTC."
+          }
+        }
+      }
+    }
+  }
+}

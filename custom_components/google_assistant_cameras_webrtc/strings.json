@@ -1,0 +1,49 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Google Assistant WebRTC Cameras",
+        "description": "Installing this integration makes Home Assistant offer WebRTC (with HLS fallback) when Google Assistant shows a camera on a Nest display. There is nothing to configure: removing the integration restores stock behaviour."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Already configured. Only a single configuration possible."
+    }
+  },
+  "issues": {
+    "trait_changed": {
+      "title": "Google Assistant WebRTC Cameras is inactive",
+      "description": "Home Assistant {ha_version} changed the Google Assistant camera trait in a way this integration does not recognise ({detail}). Google Assistant keeps the stock HLS behaviour. Check for an update of the integration."
+    },
+    "core_has_webrtc": {
+      "title": "Google Assistant WebRTC Cameras is no longer needed",
+      "description": "Home Assistant {ha_version} already offers WebRTC to Google Assistant itself. This integration stood down and can be removed."
+    },
+    "no_https": {
+      "title": "WebRTC for Google Assistant needs an HTTPS URL",
+      "description": "The URL Home Assistant hands to Google for camera streams ({scheme}://…) is not HTTPS, so Google's player cannot reach the WebRTC signalling endpoint. Google Assistant keeps the stock HLS behaviour. Set an HTTPS internal or external URL (Settings → System → Network) that your displays can reach, then this issue clears on its own."
+    },
+    "sync_needed": {
+      "title": "Say \"Hey Google, sync my devices\"",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Google device sync",
+            "description": "Home Assistant could not ask Google to re-sync your devices ({reason}). Say \"Hey Google, sync my devices\" to any Google device, then submit this form. The issue also clears by itself once a sync arrives."
+          }
+        }
+      }
+    },
+    "camera_unsupported": {
+      "title": "{entity_id}: WebRTC disabled for Google Assistant",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Retry WebRTC for {entity_id}",
+            "description": "Google's player could not negotiate a WebRTC stream for {entity_id} ({reason}). Google displays receive the stock HLS stream for this camera. Google's displays need H.264 or VP8 video (480p–1080p); HEVC/H.265 cameras need an H.264 sub-stream. After changing the camera's stream, submit this form to try WebRTC again."
+          }
+        }
+      }
+    }
+  }
+}

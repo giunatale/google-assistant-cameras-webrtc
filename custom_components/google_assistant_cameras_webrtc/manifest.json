@@ -1,0 +1,24 @@
+{
+  "domain": "google_assistant_cameras_webrtc",
+  "name": "Google Assistant WebRTC Cameras",
+  "after_dependencies": [
+    "google_assistant",
+    "cloud",
+    "go2rtc"
+  ],
+  "codeowners": [
+    "@giunatale"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "camera",
+    "webhook"
+  ],
+  "documentation": "https://github.com/giunatale/google-assistant-cameras-webrtc",
+  "integration_type": "service",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/giunatale/google-assistant-cameras-webrtc/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "0.1.0"
+}
