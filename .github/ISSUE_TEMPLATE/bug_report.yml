@@ -1,0 +1,47 @@
+name: Bug report
+description: Something does not work as described in the README
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, check the README's troubleshooting section and the repair issues in Home Assistant.
+  - type: input
+    id: versions
+    attributes:
+      label: Home Assistant version / integration version
+      placeholder: "2026.10.2 / 1.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: link
+    attributes:
+      label: Google Assistant link
+      options:
+        - Nabu Casa
+        - Self-hosted project with service_account
+        - Self-hosted project without service_account
+    validations:
+      required: true
+  - type: input
+    id: display
+    attributes:
+      label: Display model and camera integration
+      placeholder: "Nest Hub 2nd gen; Reolink sub-stream via go2rtc"
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens, what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Debug log excerpt
+      description: Enable `custom_components.google_assistant_cameras_webrtc: debug`, reproduce once, paste the lines of that session. They contain no secrets or addresses.
+      render: text
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Settings → Devices & services → the integration → Download diagnostics (contains no URLs, tokens or addresses).
