@@ -170,8 +170,8 @@ Issues and pull requests are welcome. Please attach the diagnostics download and
 
 ## Trademarks and credits
 
-This is an independent, community project. It is not affiliated with, endorsed by or sponsored by Google LLC, the WebRTC project, Open Home Foundation / Home Assistant, or Nabu Casa. Google, Google Assistant, Google Home, Nest and Chromecast are trademarks of Google LLC; Home Assistant is a trademark of the Open Home Foundation; WebRTC is a name and mark of its respective owners. They are used here only to say what this integration works with. The WebRTC speech-bubble mark in the icon and logo is used to refer to the technology, not to claim ownership of it, and is excluded from the MIT license below.
+This is an independent, community project. It is not affiliated with, endorsed by or sponsored by Google LLC, the WebRTC project, Open Home Foundation / Home Assistant, or Nabu Casa. Google, Google Assistant, Google Home, Nest and Chromecast are trademarks of Google LLC; Home Assistant is a trademark of the Open Home Foundation; WebRTC is a name and mark of its respective owners. They are used here only to say what this integration works with. The WebRTC logo mark in the icon and logo is © The WebRTC project authors; the license of the WebRTC project's distribution is reproduced in [`brand/NOTICE`](custom_components/google_assistant_cameras_webrtc/brand/NOTICE), and use of the mark implies no endorsement by Google or the WebRTC project.
 
 ## License
 
-The code is MIT licensed — see [LICENSE](LICENSE). The brand images under `custom_components/google_assistant_cameras_webrtc/brand/` are not covered by it.
+MIT — see [LICENSE](LICENSE). This covers the code and the brand images in `custom_components/google_assistant_cameras_webrtc/brand/`, except the WebRTC mark they contain, which stays with its owners (see above).
