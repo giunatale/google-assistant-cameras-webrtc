@@ -1,4 +1,6 @@
-# Google Assistant WebRTC Cameras
+<p align="center">
+  <img src="custom_components/google_assistant_cameras_webrtc/brand/logo.png" alt="Google Assistant WebRTC Cameras" width="420">
+</p>
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 [![Validate](https://github.com/giunatale/google-assistant-cameras-webrtc/actions/workflows/validate.yml/badge.svg)](https://github.com/giunatale/google-assistant-cameras-webrtc/actions/workflows/validate.yml)
@@ -166,6 +168,10 @@ Settings → Devices & services → Google Assistant WebRTC Cameras → Delete. 
 
 Issues and pull requests are welcome. Please attach the diagnostics download and a debug log excerpt (they contain no secrets) to bug reports. Tests run with `pip install -r requirements_test.txt && pytest`; `ruff check` and `ruff format` keep the style.
 
+## Trademarks and credits
+
+This is an independent, community project. It is not affiliated with, endorsed by or sponsored by Google LLC, the WebRTC project, Open Home Foundation / Home Assistant, or Nabu Casa. Google, Google Assistant, Google Home, Nest and Chromecast are trademarks of Google LLC; Home Assistant is a trademark of the Open Home Foundation; WebRTC is a name and mark of its respective owners. They are used here only to say what this integration works with. The WebRTC speech-bubble mark in the icon and logo is used to refer to the technology, not to claim ownership of it, and is excluded from the MIT license below.
+
 ## License
 
-MIT — see [LICENSE](LICENSE).
+The code is MIT licensed — see [LICENSE](LICENSE). The brand images under `custom_components/google_assistant_cameras_webrtc/brand/` are not covered by it.
