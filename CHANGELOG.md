@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-20
+
+### Changed
+
+- Brand images trimmed and sized to the Home Assistant brands image
+  specification (they are served from the integration's `brand` folder by
+  Home Assistant 2026.3+ and, for the store listing, from the latest release).
+
 ## [1.0.0] - 2026-10-20
 
 ### Added
@@ -39,5 +47,6 @@ All notable changes to this project are documented here. The format follows
   Google Home app on Android and the Google TV / Android TV cast path (Sony
   Bravia, Mi Box 4).
 
-[Unreleased]: https://github.com/giunatale/google-assistant-cameras-webrtc/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/giunatale/google-assistant-cameras-webrtc/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/giunatale/google-assistant-cameras-webrtc/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/giunatale/google-assistant-cameras-webrtc/releases/tag/v1.0.0
