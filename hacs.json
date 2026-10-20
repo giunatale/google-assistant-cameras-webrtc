@@ -1,0 +1,5 @@
+{
+  "name": "Google Assistant WebRTC Cameras",
+  "homeassistant": "2026.10.0",
+  "render_readme": true
+}
