@@ -122,6 +122,7 @@ async def async_setup_entry(
     elif runtime.sync_schema != SYNC_SCHEMA_VERSION:
         sync.request("sync schema changed")
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    runtime.platforms_loaded = True
     return True
 
 
@@ -130,9 +131,11 @@ async def async_unload_entry(
 ) -> bool:
     """Restore the stock trait, close the sessions and drop the webhook."""
     runtime = entry.runtime_data
+    if runtime.platforms_loaded:
+        if not await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
+            return False
+        runtime.platforms_loaded = False
     was_active = runtime.active
-    if was_active:
-        await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     runtime.stop("unload")
     if was_active:
         webhook.async_unregister(hass, runtime.webhook_id)

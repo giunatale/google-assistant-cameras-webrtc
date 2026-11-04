@@ -198,6 +198,27 @@ async def test_runtime_stand_down_when_core_grows_webrtc(
     assert ir.async_get(hass).async_get_issue(DOMAIN, ISSUE_CORE_HAS_WEBRTC) is not None
 
 
+async def test_unload_after_stand_down_unloads_the_switches(
+    hass: HomeAssistant, setup_integration
+):
+    """A stand-down clears active; the switch platform must still unload with the entry."""
+    runtime = setup_integration.runtime_data
+    switch_id = "switch.test_camera_webrtc"
+    assert hass.states.get(switch_id).state == "on"
+    runtime.decorate_sync_attributes(
+        ENTITY_ID, {"cameraStreamSupportedProtocols": ["webrtc", "hls"]}
+    )
+    await hass.async_block_till_done()
+    assert not runtime.active and runtime.platforms_loaded
+    assert await hass.config_entries.async_unload(setup_integration.entry_id)
+    await hass.async_block_till_done()
+    assert not runtime.platforms_loaded
+    assert setup_integration.state is ConfigEntryState.NOT_LOADED
+    state = hass.states.get(switch_id)
+    assert state is not None and state.state == "unavailable"
+    assert state.attributes.get("restored") is True
+
+
 async def test_remove_entry_cleans_up(
     hass: HomeAssistant, config_entry, https_url, cameras
 ):

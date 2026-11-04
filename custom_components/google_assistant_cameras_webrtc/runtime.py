@@ -76,6 +76,9 @@ class Runtime:
     patch: PatchHandle | None = None
     stand_down: Callable[[str], None] | None = None
     active: bool = False
+    # Whether the entry's platforms were forwarded; decides their unload on its
+    # own, since a stand-down clears ``active`` while they stay loaded.
+    platforms_loaded: bool = False
     synced: bool = False
     sync_schema: int | None = None
     disabled: dict[str, str] = field(default_factory=dict)
